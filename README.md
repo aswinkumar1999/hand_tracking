@@ -3,7 +3,7 @@
 Forked from : https://github.com/metalwhale/hand_tracking
 
 ### 1. File Description
-- `palm_detection_without_custom_op.tflite` - For the Palm Detection with the custom operations
+- `palm_detection_without_custom_op.tflite` - For the Palm Detection without the custom operations
 - `hand_landmark.tflite` - For the Landmark detection 
 - `anchors.csv` and `hand_tracker.py` for running those code.
 
