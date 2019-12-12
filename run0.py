@@ -1,3 +1,10 @@
+## Important :
+## directory strucrutre should be as follows
+## root -> run0.py
+#         asl_alphabet_train --> asl_alphabet_train --> A
+##                                                      B
+##                                                      .
+
 import cv2
 import os
 from hand_tracker import HandTracker
@@ -50,28 +57,50 @@ detector = HandTracker(
     box_shift=0.2,
     box_enlarge=1.3
 )
-
-c = os.listdir('img')
+dir = 'asl_alphabet_train/asl_alphabet_train'
+c = os.listdir(dir)
 count = 0
-for i in c:
-    frame = cv2.imread('img'+'/'+i,1)
-    image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    # Some Image Pre-processing
-    yen_threshold = threshold_yen(image)
-    image = rescale_intensity(image, (0, yen_threshold), (0, 255))
+pts=[]
+lbs=[]
+total=0
+for j in c:
+    d = os.listdir(dir+'/'+j)
+    for i in d:
+        total = total +1
+        frame = cv2.imread(dir+'/'+j+'/'+i,1)
+        image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # Some Image Pre-processing
+        yen_threshold = threshold_yen(image)
+        image = rescale_intensity(image, (0, yen_threshold), (0, 255))
 
-    points, _ = detector(image)
-    if points is not None:
-        count = count+1
-        for point in points:
-            x, y = point
-            cv2.circle(frame, (int(x), int(y)), THICKNESS * 2, POINT_COLOR, THICKNESS)
-        for connection in connections:
-            x0, y0 = points[connection[0]]
-            x1, y1 = points[connection[1]]
-            cv2.line(frame, (int(x0), int(y0)), (int(x1), int(y1)), CONNECTION_COLOR, THICKNESS)
-    cv2.imshow('Output', frame)
-    cv2.waitKey(0)
+        points, _ = detector(image)
+        if points is not None:
+            count = count+1
+            print(count,end='')
+            print(' / ',end='')
+            print(total)
 
-print(count)
-cv2.destroyAllWindows()
+            pts.append(points)
+            lbs.append(j)
+
+            for point in points:
+                x, y = point
+                cv2.circle(frame, (int(x), int(y)), THICKNESS * 2, POINT_COLOR, THICKNESS)
+            for connection in connections:
+                x0, y0 = points[connection[0]]
+                x1, y1 = points[connection[1]]
+                cv2.line(frame, (int(x0), int(y0)), (int(x1), int(y1)), CONNECTION_COLOR, THICKNESS)
+        # cv2.imshow('Output', frame)
+        # cv2.waitKey(0)
+## Zipped together
+dataset = list(zip(pts,lbs))
+import pickle
+## Dump the Dataset
+with open('dataset.txt',wb) as fp:
+    pickle.dump(dataset,fp)
+
+## To Load is Back :
+
+## https://stackoverflow.com/questions/27745500/how-to-save-a-list-to-a-file-and-read-it-as-a-list-type
+
+## https://stackoverflow.com/questions/2407398/how-to-merge-lists-into-a-list-of-tuples
