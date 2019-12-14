@@ -6,7 +6,7 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras import backend as K
 from skimage.filters import threshold_yen
 from skimage.exposure import rescale_intensity
-
+from collections import Counter
 
 K.clear_session()
 
@@ -58,7 +58,11 @@ detector = HandTracker(
     box_shift=0.2,
     box_enlarge=1.3
 )
+predict = []
+font = cv2.FONT_HERSHEY_SIMPLEX
 
+k=[]
+present =''
 while hasFrame:
     image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     points, _ = detector(image)
@@ -69,7 +73,20 @@ while hasFrame:
         inp = inp.reshape(1,inp.shape[0]*inp.shape[1])
         pred = mdl.predict(inp)
         val = np.argmax(pred[0])
-        print("Predicted values is :"+chr(65+val))
+        # print("Predicted values is :"+chr(65+val))
+        if(len(predict)<30):
+            predict.append(chr(65+val))
+        if(len(predict)==30):
+            del predict[0]
+            predict.append(chr(65+val))
+            a = Counter(predict)
+            next_char = list((a.most_common())[0])
+            count = next_char[1]
+            next_char = next_char[0]
+            if(count>=20):
+                if(next_char != present):
+                    k.append(next_char)
+                    present = next_char
         for point in points:
             x, y = point
             cv2.circle(frame, (int(x), int(y)), THICKNESS * 2, POINT_COLOR, THICKNESS)
@@ -77,6 +94,8 @@ while hasFrame:
             x0, y0 = points[connection[0]]
             x1, y1 = points[connection[1]]
             cv2.line(frame, (int(x0), int(y0)), (int(x1), int(y1)), CONNECTION_COLOR, THICKNESS)
+    strr = ''.join(k)
+    cv2.putText(frame, strr, (10, 100), font, 3, (0, 255, 0), 2, cv2.LINE_AA)
     cv2.imshow(WINDOW, frame)
     hasFrame, frame = capture.read()
     key = cv2.waitKey(20)
