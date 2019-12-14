@@ -1,3 +1,8 @@
 __pycache__
 asl_alphabet_test/
 asl_alphabet_train/
+dataset.txt
+dataset.zip
+dataset_bkup.txt
+hand_tracking.zip
+trained_200.h5
