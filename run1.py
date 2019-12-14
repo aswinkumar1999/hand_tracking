@@ -74,16 +74,16 @@ while hasFrame:
         pred = mdl.predict(inp)
         val = np.argmax(pred[0])
         # print("Predicted values is :"+chr(65+val))
-        if(len(predict)<30):
+        if(len(predict)<20):
             predict.append(chr(65+val))
-        if(len(predict)==30):
+        if(len(predict)==20):
             del predict[0]
             predict.append(chr(65+val))
             a = Counter(predict)
             next_char = list((a.most_common())[0])
             count = next_char[1]
             next_char = next_char[0]
-            if(count>=20):
+            if(count>=15):
                 if(next_char != present):
                     k.append(next_char)
                     present = next_char
