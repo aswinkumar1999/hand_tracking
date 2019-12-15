@@ -23,3 +23,22 @@ $ python3 run.py
 
 ### 4. Output
 ![Result](/output.gif?raw=true "Result")
+
+
+### 5. Sign-Language Translation 
+
+Code : run1.py 
+
+How it was built : hand_tracking.ipynb 
+
+Properly Documented code will be uploaded shortly.
+
+How to run : 
+
+```
+$ git clone https://github.com/aswinkumar1999/hand_tracking.git
+$ pip3 install opencv-python tensorflow
+$ python3 run1.py
+```
+
+![Result](/sign.gif?raw=true "Result")
